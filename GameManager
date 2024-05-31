@@ -1,0 +1,79 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public class GameManager : MonoBehaviour
+{
+
+    public string gameOverLevel;
+    public string nextLevel;
+
+    public string firstQuest = "Find a way to stop the ticking sound...";
+    public float bombTimer;
+   
+    public bool isBombFound;
+    public bool isBombDisarmed;
+    public bool isCRDoorUnlocked;
+    public bool isCRDoorKeyCollected;
+    public bool isFlashlightCollected;
+    public bool isScissorsFound;
+
+    public GameObject Flashlight;
+    public GameObject Scissors;
+    public GameObject CRDoorKey;
+
+    public Text txtQuestUpdate;
+    public Text txtInteractMsg;
+
+    [Header("Lvl1")]
+    public bool isBatteryCollected;
+    public int onWhatDrawer;
+    public int onWhatDoor;
+    public bool isDrawerInteractive = false;
+    public bool isDoorInteractive = false;
+    
+    void Start()
+    {
+        txtInteractMsg.text = "What is that ticking sound, It's giving me goosebumps, \n I need to make it stop!";
+        Invoke("Show1stMission",2.5f);
+    }
+    
+
+    void Show1stMission()
+    {
+        txtInteractMsg.text = "";
+        txtQuestUpdate.text = "Find a way to stop the ticking sound";
+    }
+
+    void Update()
+    {
+        if (!isBombDisarmed) 
+        {
+            bombTimer -= Time.deltaTime;
+            if (isBombFound)
+            {
+                BombQuest();
+            }
+            if (bombTimer >= 0)
+            {
+                Debug.Log("The bomb exploded!");
+            }
+        }
+        else 
+        {
+            txtQuestUpdate.text = "Find a way to get out";
+        }
+    }
+
+    void BombQuest()
+    {
+        float minutes = Mathf.Floor(bombTimer / 60);
+        float seconds = bombTimer % 60;
+        txtQuestUpdate.text = "Find something to cut the wires before the time runs out" + minutes.ToString() + ":" + Mathf.RoundToInt(seconds);
+    }
+
+
+
+}
