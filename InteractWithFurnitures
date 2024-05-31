@@ -1,0 +1,119 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class InteractWithFurnitures : MonoBehaviour
+{
+    public GameManager gameManager;
+
+    public Text txtInteractMsg;
+    public Text txtQuestUpdate;
+
+    [Header("Interactive Furnitures")]
+    public bool isBed;
+    public bool isCRDoor;
+    public bool isToilet;
+    public bool isTable;
+   
+    [Header("Collectible Items")]
+    public GameObject crKey;
+    public GameObject scissors;
+
+    void OnTriggerEnter(Collider actor)
+    {
+        if (actor.CompareTag("Player"))
+        {
+            if (!isBed)
+            {
+                txtInteractMsg.text = "Press [E] to interact";
+            }
+            else 
+            {
+                txtQuestUpdate.text = "";
+            }
+
+
+            if (!isToilet)
+            {
+                if(!gameManager.isBombFound)
+                {
+                    txtInteractMsg.text = "Press [E] to interact";
+                }
+                else 
+                {
+                    txtQuestUpdate.text = "";
+                }
+            }
+
+            if (!isTable)
+            {
+                if(!gameManager.isBombFound)
+                {
+                    txtInteractMsg.text = "Press [E] to interact";
+                }
+                else 
+                {
+                    txtQuestUpdate.text = "";
+                }
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider actor)
+    {
+        if (actor.CompareTag("Player"))
+        {
+            if (Input.GetKey(KeyCode.E))
+            {
+                if (isCRDoor)
+                {
+                    if (gameManager.isCRDoorKeyCollected)
+                    {
+                        txtInteractMsg.text = "";
+                        Destroy(GameObject.Find("Cube"));
+                    }
+                    else 
+                    {
+                        txtInteractMsg.text = "It's locked, I need to find a way to open it...";
+                    }
+                }
+
+                else if (isBed)
+                {
+                    if (gameManager.isFlashlightCollected)
+                    {
+                        crKey.gameObject.SetActive(true);
+                        txtInteractMsg.text = "A key, I'll try this on the door";
+                    }
+                    if (gameManager.isCRDoorKeyCollected || crKey.gameObject == null)
+                    {
+                        txtInteractMsg.text = "There's nothing to collect here...";
+                    }
+                }
+
+                else if (isTable)
+                {
+                    if (gameManager.isCRDoorKeyCollected)
+                    {
+                        scissors.gameObject.SetActive(true);
+                        txtInteractMsg.text = "I might need this to cut something later";
+                    }
+                    if (gameManager.isScissorsFound || scissors.gameObject == null)
+                    {
+                        txtInteractMsg.text = "There's nothing to collect here...";
+                    }
+                }
+            }
+        }
+    }
+
+
+    private void OnTriggerExit(Collider actor)
+    {
+        if (actor.CompareTag("Player"))
+        {
+            txtInteractMsg.text = "";
+        }
+    }
+}
