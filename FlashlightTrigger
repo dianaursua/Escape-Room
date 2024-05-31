@@ -1,0 +1,71 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class FlashlightTrigger : MonoBehaviour
+{
+    Light Light;
+    public GameManager gameManager;
+
+    public GameObject Flashlight;
+
+    public Text txtInteractMsg;
+    public Text txtQuestUpdate;
+
+    void Start()
+    {
+        Light = GetComponent<Light>();
+    }
+
+    void OnTriggerEnter(Collider actor)
+    {
+        if (actor.CompareTag("Player"))
+        {
+            txtInteractMsg.text = "Press [E] to Interact";
+        }
+
+
+    }
+    void OnTriggerStay(Collider actor)
+    {
+        if (actor.CompareTag("Player"))
+        {
+            if (Input.GetKey(KeyCode.E))
+            {
+                
+                if (!gameManager.isBatteryCollected)
+                {
+                    txtInteractMsg.text = "I need to find the battery...";
+                    txtQuestUpdate.text = "Find the battery hidden inside the drawer";
+                    gameManager.isDrawerInteractive = true;
+                    Flashlight.SetActive(false);
+                }
+                else
+                {
+                    txtInteractMsg.text = "Find the key";
+                    Flashlight.SetActive(true);
+                    this.gameObject.SetActive(false);
+                }
+
+                
+
+            }
+        }
+    }
+    void OnTriggerExit(Collider actor)
+    {
+        if (actor.CompareTag("Player"))
+        {
+            txtInteractMsg.text = "";
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.F))
+        {
+            Light.enabled = !Light.enabled;
+        }
+    }
+}
